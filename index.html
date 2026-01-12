@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outils CREM</title>
+    <link rel="stylesheet" href="css/terminal.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <a href="index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link active">[accueil]</a></li>
+                    <li><a href="pages/import-moodle.html" class="nav-link">[import-moodle]</a></li>
+                    <li><a href="pages/sumup-licences.html" class="nav-link">[sumup-licences]</a></li>
+                    <li><a href="pages/traiter-colle.html" class="nav-link">[traiter-colle]</a></li>
+                    <li><a href="pages/evening-sessions.html" class="nav-link">[planif-soiree]</a></li>
+                    <li><a href="pages/excel-to-xml-moodle.html" class="nav-link">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <section class="tools-section">
+                <h2 class="section-title">
+                    <span class="prompt">#</span> Outils disponibles
+                </h2>
+                <div class="tools-grid">
+                    <a href="pages/import-moodle.html" class="tool-card">
+                        <div class="tool-icon">csv</div>
+                        <h3 class="tool-title">Import Moodle</h3>
+                        <p class="tool-desc">Convertir des donnees en CSV pour import Moodle</p>
+                    </a>
+                    <a href="pages/sumup-licences.html" class="tool-card">
+                        <div class="tool-icon">xlsx</div>
+                        <h3 class="tool-title">Sumup Licences</h3>
+                        <p class="tool-desc">Extraire et organiser les numeros d'anonymat par licence</p>
+                    </a>
+                    <a href="pages/traiter-colle.html" class="tool-card">
+                        <div class="tool-icon">note</div>
+                        <h3 class="tool-title">Traiter Colle</h3>
+                        <p class="tool-desc">Traiter les notes d'examen et les organiser par licence</p>
+                    </a>
+                    <a href="pages/evening-sessions.html" class="tool-card">
+                        <div class="tool-icon">cal</div>
+                        <h3 class="tool-title">Planif Soiree</h3>
+                        <p class="tool-desc">Organiser les seances et exporter le planning</p>
+                    </a>
+                    <a href="pages/excel-to-xml-moodle.html" class="tool-card">
+                        <div class="tool-icon">xml</div>
+                        <h3 class="tool-title">Excel to XML Moodle</h3>
+                        <p class="tool-desc">Convertir des QCM Excel en XML Moodle pour l'import de banques de questions</p>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

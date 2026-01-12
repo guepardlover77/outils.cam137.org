@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traiter Colle | Outils CREM</title>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">[accueil]</a></li>
+                    <li><a href="import-moodle.html" class="nav-link">[import-moodle]</a></li>
+                    <li><a href="sumup-licences.html" class="nav-link">[sumup-licences]</a></li>
+                    <li><a href="traiter-colle.html" class="nav-link active">[traiter-colle]</a></li>
+                    <li><a href="evening-sessions.html" class="nav-link">[planif-soiree]</a></li>
+                    <li><a href="excel-to-xml-moodle.html" class="nav-link">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div class="breadcrumb">
+                <a href="../index.html">~</a>
+                <span>/</span>
+                <span>traiter-colle</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="prompt">$</span> ./traiter-colle
+                </h1>
+                <p class="page-subtitle">Traiter les notes d'examen et les organiser par licence</p>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">1. Fichier des notes</h2>
+                <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                    Fichier CSV (separateur ;) avec colonnes "etu" (numero anonymat) et "Mark" (note).
+                    Ou fichier XLSX avec la note en colonne D et le numero en colonne AV (index 46).
+                </p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="file-notes" accept=".csv,.xlsx,.xls">
+                    <div class="file-input-icon">📊</div>
+                    <div class="file-input-text">Fichier des notes (.csv ou .xlsx)</div>
+                    <div class="file-name" id="file-notes-name"></div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">2. Fichier des licences</h2>
+                <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                    Fichier avec colonnes "Numero Anonymat" et "Licence".
+                </p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="file-licences" accept=".csv,.xlsx,.xls">
+                    <div class="file-input-icon">📋</div>
+                    <div class="file-input-text">Fichier des licences (.csv ou .xlsx)</div>
+                    <div class="file-name" id="file-licences-name"></div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">3. Configuration des groupes</h2>
+                <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                    Selectionnez les licences pour chaque groupe (optionnel). Les groupes seront ajoutes comme feuilles separees.
+                </p>
+                <div id="groups-config" style="display: none;">
+                    <div class="form-row" style="margin-bottom: var(--spacing-md);">
+                        <div class="form-group">
+                            <label>Groupe A :</label>
+                            <select id="group-a" multiple style="height: 100px;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Groupe B :</label>
+                            <select id="group-b" multiple style="height: 100px;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Groupe C :</label>
+                            <select id="group-c" multiple style="height: 100px;"></select>
+                        </div>
+                    </div>
+                    <p style="opacity: 0.6; font-size: 0.8rem;">Maintenez Ctrl (ou Cmd) pour selectionner plusieurs licences</p>
+                </div>
+                <p id="groups-placeholder" style="opacity: 0.5; font-size: 0.875rem;">Chargez d'abord les fichiers pour configurer les groupes</p>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">4. Options</h2>
+                <div class="form-group">
+                    <label for="output-filename">Nom du fichier de sortie :</label>
+                    <input type="text" id="output-filename" value="resultats.xlsx">
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Traitement</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="btn-process" disabled>Generer le fichier</button>
+                    <button class="btn" id="btn-clear">Effacer</button>
+                </div>
+                <div class="log-output" id="log-output"></div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Apercu</h2>
+                <div id="preview-container">
+                    <p style="opacity: 0.5; font-size: 0.875rem;">Aucune donnee traitee</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/traiter-colle.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planification Soiree | Outils CREM</title>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <link rel="stylesheet" href="../css/evening-sessions.css">
+</head>
+<body>
+    <div class="container planning-container">
+        <header class="header">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">[accueil]</a></li>
+                    <li><a href="import-moodle.html" class="nav-link">[import-moodle]</a></li>
+                    <li><a href="sumup-licences.html" class="nav-link">[sumup-licences]</a></li>
+                    <li><a href="traiter-colle.html" class="nav-link">[traiter-colle]</a></li>
+                    <li><a href="evening-sessions.html" class="nav-link active">[planif-soiree]</a></li>
+                    <li><a href="excel-to-xml-moodle.html" class="nav-link">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main planning-main">
+            <!-- App Layout -->
+            <div class="planning-app">
+                <!-- Sidebar -->
+                <aside class="planning-sidebar" id="sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Periode</h3>
+                        <div class="date-range-form">
+                            <div class="form-group-inline">
+                                <label for="start-month">De:</label>
+                                <select id="start-month" class="form-select"></select>
+                                <select id="start-year" class="form-select"></select>
+                            </div>
+                            <div class="form-group-inline">
+                                <label for="end-month">A:</label>
+                                <select id="end-month" class="form-select"></select>
+                                <select id="end-year" class="form-select"></select>
+                            </div>
+                            <button class="btn btn-small btn-apply" id="btn-apply-dates">Appliquer</button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Importer</h3>
+                        <div class="import-zone">
+                            <input type="file" id="ics-file-input" accept=".ics" class="hidden-input">
+                            <button class="btn btn-small btn-full" id="btn-import-ics">Fichier ICS</button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Ajouter un cours</h3>
+                        <div class="add-course-form">
+                            <input type="text" id="course-name" placeholder="Nom du cours" class="form-input">
+                            <div class="color-picker">
+                                <label>Couleur:</label>
+                                <div class="color-options" id="color-options">
+                                    <button type="button" class="color-btn active" data-color="#d1c4e9" style="background:#d1c4e9" title="Violet"></button>
+                                    <button type="button" class="color-btn" data-color="#bbdefb" style="background:#bbdefb" title="Bleu"></button>
+                                    <button type="button" class="color-btn" data-color="#c8e6c9" style="background:#c8e6c9" title="Vert"></button>
+                                    <button type="button" class="color-btn" data-color="#ffe0b2" style="background:#ffe0b2" title="Orange"></button>
+                                    <button type="button" class="color-btn" data-color="#ffcdd2" style="background:#ffcdd2" title="Rouge"></button>
+                                    <button type="button" class="color-btn" data-color="#fff9c4" style="background:#fff9c4" title="Jaune"></button>
+                                </div>
+                            </div>
+                            <button class="btn btn-small btn-primary btn-full" id="btn-add-course">Ajouter</button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section sidebar-section-grow">
+                        <h3 class="sidebar-title">Cours disponibles</h3>
+                        <div class="course-list" id="course-list">
+                            <p class="empty-message">Aucun cours. Ajoutez-en un ci-dessus.</p>
+                        </div>
+                        <p class="drag-hint">Glissez vers le planning</p>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Vacances</h3>
+                        <div class="vacation-form">
+                            <input type="date" id="vacation-start" class="form-input">
+                            <input type="date" id="vacation-end" class="form-input">
+                            <input type="text" id="vacation-label" placeholder="Label (ex: Noel)" class="form-input">
+                            <button class="btn btn-small btn-full" id="btn-add-vacation">Ajouter vacances</button>
+                        </div>
+                        <div class="vacation-list" id="vacation-list"></div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Exporter</h3>
+                        <div class="export-buttons">
+                            <button class="btn btn-small" id="btn-export-png">Image PNG</button>
+                            <button class="btn btn-small" id="btn-export-pdf">PDF</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Planning Area -->
+                <div class="planning-stage" id="planning-stage">
+                    <div class="planning-header">
+                        <h1 class="planning-title">PLANNING SEANCES TUTORAT</h1>
+                        <p class="planning-subtitle" id="planning-subtitle">Annee universitaire 2024-2025</p>
+                    </div>
+                    <div class="planning-grid-wrapper">
+                        <div class="planning-grid" id="planning-grid">
+                            <!-- Months will be rendered here -->
+                        </div>
+                    </div>
+                    <div class="planning-legend" id="planning-legend">
+                        <!-- Legend will be generated from courses -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Interact.js for Drag & Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.18/dist/interact.min.js"></script>
+    <!-- ical.js for ICS parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+    <!-- html2canvas for export -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/evening-sessions.js"></script>
+</body>
+</html>

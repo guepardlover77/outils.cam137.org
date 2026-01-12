@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumup Licences | Outils CREM</title>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">[accueil]</a></li>
+                    <li><a href="import-moodle.html" class="nav-link">[import-moodle]</a></li>
+                    <li><a href="sumup-licences.html" class="nav-link active">[sumup-licences]</a></li>
+                    <li><a href="traiter-colle.html" class="nav-link">[traiter-colle]</a></li>
+                    <li><a href="evening-sessions.html" class="nav-link">[planif-soiree]</a></li>
+                    <li><a href="excel-to-xml-moodle.html" class="nav-link">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div class="breadcrumb">
+                <a href="../index.html">~</a>
+                <span>/</span>
+                <span>sumup-licences</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="prompt">$</span> ./sumup-licences
+                </h1>
+                <p class="page-subtitle">Extraire les numeros d'anonymat de fichiers Excel et les organiser par licence</p>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Fichiers d'entree</h2>
+                <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                    Selectionnez plusieurs fichiers .xlsx. Le nom de chaque fichier sera utilise comme nom de licence.
+                    Les numeros d'anonymat sont extraits de la colonne "Client".
+                </p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="input-files" accept=".xlsx,.xls" multiple>
+                    <div class="file-input-icon">📁</div>
+                    <div class="file-input-text">Glissez des fichiers ici ou cliquez pour selectionner</div>
+                    <div class="file-input-text">.xlsx, .xls (plusieurs fichiers)</div>
+                </div>
+                <div class="file-list" id="file-list"></div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Options</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="output-17">Fichier pour numeros 1 et 7 :</label>
+                        <input type="text" id="output-17" value="licences_1_7.xlsx">
+                    </div>
+                    <div class="form-group">
+                        <label for="output-9">Fichier pour numeros 9 :</label>
+                        <input type="text" id="output-9" value="licences_9.xlsx">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Traitement</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="btn-process" disabled>Traiter les fichiers</button>
+                    <button class="btn" id="btn-clear">Effacer</button>
+                </div>
+                <div class="log-output" id="log-output"></div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Statistiques</h2>
+                <div id="stats-container">
+                    <p style="opacity: 0.5; font-size: 0.875rem;">Aucune donnee traitee</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/sumup-licences.js"></script>
+</body>
+</html>

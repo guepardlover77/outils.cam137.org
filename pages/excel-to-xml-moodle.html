@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to XML Moodle | Outils CREM</title>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">[accueil]</a></li>
+                    <li><a href="import-moodle.html" class="nav-link">[import-moodle]</a></li>
+                    <li><a href="sumup-licences.html" class="nav-link">[sumup-licences]</a></li>
+                    <li><a href="traiter-colle.html" class="nav-link">[traiter-colle]</a></li>
+                    <li><a href="evening-sessions.html" class="nav-link">[planif-soiree]</a></li>
+                    <li><a href="excel-to-xml-moodle.html" class="nav-link active">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div class="breadcrumb">
+                <a href="../index.html">~</a>
+                <span>/</span>
+                <span>excel-to-xml-moodle</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="prompt">$</span> ./excel-to-xml-moodle
+                </h1>
+                <p class="page-subtitle">Convertir des QCM Excel en XML Moodle pour l'import de banques de questions</p>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Fichier Excel</h2>
+                <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                    Le fichier Excel doit contenir les colonnes suivantes :<br>
+                    <code>SNO</code>, <code>Questions</code>, <code>Type</code>, <code>Required</code>,
+                    <code>option 1</code> a <code>option 5</code>, <code>Correct Answer</code>,
+                    <code>Commentaires</code>, <code>Points</code>
+                </p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="input-file" accept=".xlsx,.xls">
+                    <div class="file-input-icon">📄</div>
+                    <div class="file-input-text">Glissez un fichier Excel ici ou cliquez pour selectionner</div>
+                    <div class="file-input-text">.xlsx, .xls</div>
+                    <div class="file-name" id="file-name"></div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Options</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category-name">Nom de la categorie :</label>
+                        <input type="text" id="category-name" placeholder="ex: Biologie Cellulaire" value="Questions">
+                    </div>
+                    <div class="form-group">
+                        <label for="output-filename">Nom du fichier XML :</label>
+                        <input type="text" id="output-filename" value="moodle_questions.xml">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Traitement</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="btn-convert" disabled>Convertir en XML</button>
+                    <button class="btn" id="btn-clear">Effacer</button>
+                </div>
+                <div class="log-output" id="log-output"></div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Apercu des questions</h2>
+                <div id="preview-container" style="overflow-x: auto;">
+                    <p style="opacity: 0.5; font-size: 0.875rem;">Aucun fichier charge</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/excel-to-xml-moodle.js"></script>
+</body>
+</html>

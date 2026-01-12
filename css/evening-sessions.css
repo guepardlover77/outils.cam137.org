@@ -1,0 +1,607 @@
+/* Evening Sessions - Paper/Excel Style Planning */
+
+/* Container Override */
+.planning-container {
+    max-width: 100%;
+    padding: var(--spacing-md);
+}
+
+.planning-main {
+    overflow: hidden;
+}
+
+/* App Layout */
+.planning-app {
+    display: flex;
+    gap: var(--spacing-lg);
+    min-height: calc(100vh - 200px);
+}
+
+/* Sidebar */
+.planning-sidebar {
+    width: 280px;
+    min-width: 280px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-md);
+}
+
+.sidebar-section:last-child {
+    border-bottom: none;
+}
+
+.sidebar-section-grow {
+    flex: 1;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--prompt-color);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Form Elements */
+.form-input,
+.form-select {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--code-bg);
+    color: var(--foreground);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-group-inline label {
+    font-size: 0.7rem;
+    min-width: 25px;
+    margin-bottom: 0;
+}
+
+.form-group-inline .form-select {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.date-range-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.hidden-input {
+    display: none;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-apply {
+    margin-top: var(--spacing-xs);
+}
+
+/* Color Picker */
+.color-picker {
+    margin-bottom: var(--spacing-sm);
+}
+
+.color-picker label {
+    font-size: 0.7rem;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.color-options {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.color-btn {
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+}
+
+.color-btn.active {
+    border-color: var(--foreground);
+    box-shadow: 0 0 0 2px var(--background);
+}
+
+/* Course List */
+.course-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-height: 80px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.empty-message {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.course-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: grab;
+    font-size: 0.75rem;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+.course-item:hover {
+    border-color: var(--accent);
+    transform: translateX(2px);
+}
+
+.course-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.course-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.course-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-delete {
+    background: none;
+    border: none;
+    color: var(--foreground);
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 1rem;
+    padding: 0;
+    line-height: 1;
+}
+
+.course-delete:hover {
+    opacity: 1;
+    color: var(--error);
+}
+
+.drag-hint {
+    font-size: 0.65rem;
+    color: var(--accent-tertiary);
+    text-align: center;
+    margin-top: var(--spacing-xs);
+    opacity: 0.8;
+}
+
+/* Vacation List */
+.vacation-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.vacation-list {
+    margin-top: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.vacation-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xs);
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: var(--radius-sm);
+    font-size: 0.65rem;
+}
+
+.vacation-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.vacation-item-label {
+    font-weight: 600;
+}
+
+.vacation-item-dates {
+    opacity: 0.7;
+}
+
+.vacation-delete {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+}
+
+.vacation-delete:hover {
+    color: #c00;
+}
+
+/* Export Buttons */
+.export-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.export-buttons .btn {
+    flex: 1;
+}
+
+/* Planning Stage */
+.planning-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    min-width: 0;
+}
+
+.planning-header {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #333;
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.planning-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.planning-subtitle {
+    font-size: 0.85rem;
+    color: #666;
+    margin: var(--spacing-xs) 0 0 0;
+}
+
+/* Planning Grid Wrapper */
+.planning-grid-wrapper {
+    flex: 1;
+    overflow: auto;
+    padding: var(--spacing-sm);
+}
+
+/* Planning Grid - Columnar Layout */
+.planning-grid {
+    display: flex;
+    gap: 0;
+    min-width: max-content;
+}
+
+/* Month Column */
+.month-column {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #333;
+}
+
+.month-column:first-child {
+    border-left: 2px solid #333;
+}
+
+.month-column:last-child {
+    border-right: 2px solid #333;
+}
+
+.month-header {
+    background-color: #e8e8e8;
+    border-bottom: 2px solid #333;
+    border-top: 2px solid #333;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #333;
+    text-transform: uppercase;
+    min-width: 200px;
+}
+
+/* Day Row */
+.day-row {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    min-height: 26px;
+    background-color: #fff;
+}
+
+.day-row:last-child {
+    border-bottom: 2px solid #333;
+}
+
+.day-row.weekend {
+    background-color: #e8e8e8;
+}
+
+.day-row.vacation {
+    background-color: #d0d0d0;
+}
+
+.day-row.drop-target {
+    background-color: rgba(152, 195, 121, 0.3);
+    outline: 2px dashed #98c379;
+    outline-offset: -2px;
+}
+
+/* Day Cells */
+.day-name {
+    width: 30px;
+    padding: 2px 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #333;
+    border-right: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+.day-num {
+    width: 28px;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    color: #333;
+    border-right: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.day-event-slot {
+    flex: 1;
+    min-width: 140px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Events in Grid */
+.grid-event {
+    width: 100%;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: grab;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.grid-event:hover {
+    filter: brightness(0.95);
+}
+
+.grid-event.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+/* Vacation Block */
+.vacation-block {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+.vacation-block.vacation-start {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.vacation-block.vacation-end {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Vertical text for vacation spanning multiple days */
+.vacation-block-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+}
+
+/* Planning Legend */
+.planning-legend {
+    background-color: #f5f5f5;
+    border-top: 2px solid #333;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 40px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.7rem;
+    color: #333;
+}
+
+.legend-color {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+/* Drag Clone */
+.drag-clone {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.9;
+    transform: rotate(2deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .planning-app {
+        flex-direction: column;
+    }
+
+    .planning-sidebar {
+        width: 100%;
+        min-width: unset;
+        max-height: 300px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-section {
+        flex: 1;
+        min-width: 200px;
+        border-bottom: none;
+        border-right: 1px solid var(--border-color);
+        padding-right: var(--spacing-md);
+    }
+
+    .sidebar-section:last-child {
+        border-right: none;
+    }
+
+    .sidebar-section-grow {
+        flex: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .planning-sidebar {
+        flex-direction: column;
+        max-height: 400px;
+    }
+
+    .sidebar-section {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-right: 0;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .planning-sidebar,
+    .header,
+    .footer {
+        display: none !important;
+    }
+
+    .planning-container {
+        padding: 0;
+    }
+
+    .planning-app {
+        display: block;
+    }
+
+    .planning-stage {
+        border: 1px solid #000;
+    }
+
+    .planning-grid-wrapper {
+        overflow: visible;
+    }
+}
+
+/* Theme adjustments for dark mode */
+[data-theme="light"] .planning-stage,
+[data-theme="light"] .month-header,
+[data-theme="light"] .day-row,
+[data-theme="light"] .planning-header,
+[data-theme="light"] .planning-legend {
+    /* Keep paper style in light mode */
+}
+
+/* Ensure paper look even in dark mode */
+.planning-stage {
+    color: #333;
+}

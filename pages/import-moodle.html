@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Moodle | Outils CREM</title>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <span class="prompt">~</span> outils.crem.fr
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">[accueil]</a></li>
+                    <li><a href="import-moodle.html" class="nav-link active">[import-moodle]</a></li>
+                    <li><a href="sumup-licences.html" class="nav-link">[sumup-licences]</a></li>
+                    <li><a href="traiter-colle.html" class="nav-link">[traiter-colle]</a></li>
+                    <li><a href="evening-sessions.html" class="nav-link">[planif-soiree]</a></li>
+                    <li><a href="excel-to-xml-moodle.html" class="nav-link">[excel-to-xml]</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span class="theme-icon">◐</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div class="breadcrumb">
+                <a href="../index.html">~</a>
+                <span>/</span>
+                <span>import-moodle</span>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span class="prompt">$</span> ./import-moodle
+                </h1>
+                <p class="page-subtitle">Convertir des donnees en CSV pour import Moodle</p>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Mode d'entree</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="manual">Saisie directe</button>
+                    <button class="tab-btn" data-tab="file">Fichier Excel/ODS</button>
+                </div>
+
+                <!-- Manual input tab -->
+                <div class="tab-content active" id="tab-manual">
+                    <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                        Collez vos donnees ci-dessous. Format : un etudiant par ligne.<br>
+                        Separateur accepte : tabulation, point-virgule ou virgule.<br>
+                        Exemple : <code>1234    etudiant@email.fr</code>
+                    </p>
+                    <div class="form-group">
+                        <label for="manual-input">Numeros d'anonymat et emails :</label>
+                        <textarea id="manual-input" rows="10" placeholder="1234    etudiant1@email.fr
+5678    etudiant2@email.fr
+9012    etudiant3@email.fr"></textarea>
+                    </div>
+                </div>
+
+                <!-- File input tab -->
+                <div class="tab-content" id="tab-file">
+                    <p style="margin-bottom: var(--spacing-md); opacity: 0.7; font-size: 0.875rem;">
+                        Le fichier doit contenir : Colonne A = Numeros d'anonymat, Colonne B = Emails
+                    </p>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="input-file" accept=".xlsx,.xls,.ods,.csv">
+                        <div class="file-input-icon">📄</div>
+                        <div class="file-input-text">Glissez un fichier ici ou cliquez pour selectionner</div>
+                        <div class="file-input-text">.xlsx, .xls, .ods, .csv</div>
+                        <div class="file-name" id="file-name"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Options</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cohort-id">Cohorte ID (optionnel) :</label>
+                        <input type="text" id="cohort-id" placeholder="ex: year2024">
+                    </div>
+                    <div class="form-group">
+                        <label for="output-filename">Nom du fichier de sortie :</label>
+                        <input type="text" id="output-filename" value="moodle_import.csv">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Traitement</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="btn-convert">Convertir en CSV</button>
+                    <button class="btn" id="btn-clear">Effacer</button>
+                </div>
+                <div class="log-output" id="log-output"></div>
+            </div>
+
+            <div class="tool-section">
+                <h2 class="tool-section-title">Apercu des donnees</h2>
+                <div id="preview-container" style="overflow-x: auto;">
+                    <p style="opacity: 0.5; font-size: 0.875rem;">Aucune donnee chargee</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span class="prompt">$</span> echo "CREM Tools"
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/import-moodle.js"></script>
+</body>
+</html>

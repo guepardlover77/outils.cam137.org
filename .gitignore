@@ -1,0 +1,23 @@
+# Fichiers temporaires Claude
+tmpclaude-*
+.claude/
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# Fichiers Excel de test/exemples locaux
+# exemple.xlsx
+# las1.xlsx
+# las2.xlsx
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+*.log
