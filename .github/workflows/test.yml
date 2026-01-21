@@ -1,0 +1,351 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test -- --coverage --ci --reporters=default --reporters=jest-junit
+        env:
+          JEST_JUNIT_OUTPUT_DIR: ./reports
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.node-version }}
+          path: ./reports
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{ matrix.node-version }}
+          path: ./coverage
+
+  validate-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install html-validate
+        run: npm install -g html-validate
+
+      - name: Validate HTML files
+        run: |
+          echo "Validating HTML files..."
+          html-validate "*.html" "pages/*.html" --config '{"extends": ["html-validate:recommended"], "rules": {"no-inline-style": "off", "prefer-native-element": "off", "no-trailing-whitespace": "off"}}' || true
+
+  validate-js:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Check JavaScript syntax
+        run: |
+          echo "Checking JavaScript syntax..."
+          for file in js/*.js; do
+            echo "Checking $file..."
+            node --check "$file" || exit 1
+          done
+          echo "All JavaScript files have valid syntax"
+
+  validate-xml-output:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate XML generation with images
+        run: |
+          cat << 'EOF' > validate-xml.js
+          /**
+           * Validation du XML Moodle genere
+           * Verifie que les images sont correctement integrees
+           */
+
+          const fs = require('fs');
+          const path = require('path');
+
+          // Charger le code word-to-xml-moodle
+          const code = fs.readFileSync(
+            path.join(__dirname, 'js/word-to-xml-moodle.js'),
+            'utf8'
+          );
+
+          // Mock du DOM minimal
+          global.document = {
+            getElementById: () => ({
+              value: '',
+              textContent: '',
+              style: {},
+              innerHTML: '',
+              addEventListener: () => {},
+              classList: { add: () => {}, remove: () => {} },
+              appendChild: () => {}
+            }),
+            createElement: (tag) => ({
+              className: '',
+              style: {},
+              innerHTML: '',
+              textContent: '',
+              click: () => {},
+              appendChild: () => {}
+            }),
+            body: { appendChild: () => {}, removeChild: () => {} },
+            querySelectorAll: () => []
+          };
+
+          global.URL = {
+            createObjectURL: () => 'blob:test',
+            revokeObjectURL: () => {}
+          };
+
+          // Executer le code sans DOMContentLoaded
+          const codeWithoutInit = code.replace(
+            /document\.addEventListener\('DOMContentLoaded'[\s\S]*?\}\);/,
+            ''
+          );
+          eval(codeWithoutInit);
+
+          // Tests
+          console.log('=== Validation XML Moodle ===\n');
+
+          // Test 1: XML basique
+          console.log('Test 1: Generation XML basique...');
+          const converter = new WordToMoodleConverter();
+          converter.questions = [{
+            id: 1,
+            title: 'Question test',
+            titleImage: null,
+            generalFeedback: 'Feedback test',
+            feedbackImage: null,
+            answers: [
+              { text: 'A', letter: 'A', isCorrect: true, image: null },
+              { text: 'B', letter: 'B', isCorrect: false, image: null },
+              { text: 'C', letter: 'C', isCorrect: false, image: null },
+              { text: 'D', letter: 'D', isCorrect: false, image: null },
+              { text: 'E', letter: 'E', isCorrect: false, image: null }
+            ]
+          }];
+
+          const xml = converter.createMoodleXML('Test');
+
+          if (!xml.includes('<?xml version="1.0"')) {
+            console.error('ERREUR: Declaration XML manquante');
+            process.exit(1);
+          }
+          if (!xml.includes('<quiz>') || !xml.includes('</quiz>')) {
+            console.error('ERREUR: Balises quiz manquantes');
+            process.exit(1);
+          }
+          console.log('  OK - XML basique valide\n');
+
+          // Test 2: XML avec image dans l'enonce
+          console.log('Test 2: Image dans l\'enonce...');
+          converter.questions[0].titleImage = {
+            data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+            name: 'test-enonce.png',
+            type: 'image/png'
+          };
+
+          const xmlWithTitleImage = converter.createMoodleXML('Test');
+
+          if (!xmlWithTitleImage.includes('@@PLUGINFILE@@/test-enonce.png')) {
+            console.error('ERREUR: Reference image manquante dans le HTML');
+            process.exit(1);
+          }
+          if (!xmlWithTitleImage.includes('<file name="test-enonce.png"')) {
+            console.error('ERREUR: Balise file manquante');
+            process.exit(1);
+          }
+          if (!xmlWithTitleImage.includes('encoding="base64"')) {
+            console.error('ERREUR: Encodage base64 non specifie');
+            process.exit(1);
+          }
+          if (!xmlWithTitleImage.includes('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk')) {
+            console.error('ERREUR: Donnees base64 incorrectes');
+            process.exit(1);
+          }
+          console.log('  OK - Image enonce integree correctement\n');
+
+          // Test 3: XML avec image dans une reponse
+          console.log('Test 3: Image dans une reponse...');
+          converter.questions[0].titleImage = null;
+          converter.questions[0].answers[1].image = {
+            data: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD',
+            name: 'reponse-B.jpg',
+            type: 'image/jpeg'
+          };
+
+          const xmlWithAnswerImage = converter.createMoodleXML('Test');
+
+          if (!xmlWithAnswerImage.includes('@@PLUGINFILE@@/reponse-B.jpg')) {
+            console.error('ERREUR: Reference image reponse manquante');
+            process.exit(1);
+          }
+          if (!xmlWithAnswerImage.includes('<file name="reponse-B.jpg"')) {
+            console.error('ERREUR: Balise file pour reponse manquante');
+            process.exit(1);
+          }
+          console.log('  OK - Image reponse integree correctement\n');
+
+          // Test 4: XML avec image dans le feedback
+          console.log('Test 4: Image dans le feedback...');
+          converter.questions[0].answers[1].image = null;
+          converter.questions[0].feedbackImage = {
+            data: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+            name: 'feedback-explication.gif',
+            type: 'image/gif'
+          };
+
+          const xmlWithFeedbackImage = converter.createMoodleXML('Test');
+
+          if (!xmlWithFeedbackImage.includes('@@PLUGINFILE@@/feedback-explication.gif')) {
+            console.error('ERREUR: Reference image feedback manquante');
+            process.exit(1);
+          }
+          console.log('  OK - Image feedback integree correctement\n');
+
+          // Test 5: Nettoyage des noms de fichiers
+          console.log('Test 5: Nettoyage des noms de fichiers...');
+          converter.questions[0].feedbackImage = null;
+          converter.questions[0].titleImage = {
+            data: 'data:image/png;base64,TEST',
+            name: 'image avec espaces et caractères spéciaux!@#.png',
+            type: 'image/png'
+          };
+
+          const xmlWithSpecialChars = converter.createMoodleXML('Test');
+
+          if (xmlWithSpecialChars.includes('espaces et') || xmlWithSpecialChars.includes('!@#')) {
+            console.error('ERREUR: Caracteres speciaux non nettoyes');
+            process.exit(1);
+          }
+          if (!xmlWithSpecialChars.includes('image_avec_espaces')) {
+            console.error('ERREUR: Nom de fichier non nettoye correctement');
+            process.exit(1);
+          }
+          console.log('  OK - Noms de fichiers nettoyes correctement\n');
+
+          // Test 6: Multiple images
+          console.log('Test 6: Images multiples...');
+          converter.questions[0].titleImage = {
+            data: 'data:image/png;base64,TITLE_DATA',
+            name: 'title.png',
+            type: 'image/png'
+          };
+          converter.questions[0].feedbackImage = {
+            data: 'data:image/png;base64,FEEDBACK_DATA',
+            name: 'feedback.png',
+            type: 'image/png'
+          };
+          converter.questions[0].answers[0].image = {
+            data: 'data:image/png;base64,ANSWER_A_DATA',
+            name: 'answer_a.png',
+            type: 'image/png'
+          };
+          converter.questions[0].answers[2].image = {
+            data: 'data:image/png;base64,ANSWER_C_DATA',
+            name: 'answer_c.png',
+            type: 'image/png'
+          };
+
+          const xmlMultipleImages = converter.createMoodleXML('Test');
+
+          const fileTagCount = (xmlMultipleImages.match(/<file name=/g) || []).length;
+          if (fileTagCount !== 4) {
+            console.error(`ERREUR: Attendu 4 balises file, trouve ${fileTagCount}`);
+            process.exit(1);
+          }
+          console.log('  OK - Images multiples integrees correctement\n');
+
+          // Test 7: Validation structure XML
+          console.log('Test 7: Structure XML valide...');
+
+          // Verifier que le XML est bien forme (balises ouvertes/fermees)
+          const openQuiz = (xmlMultipleImages.match(/<quiz>/g) || []).length;
+          const closeQuiz = (xmlMultipleImages.match(/<\/quiz>/g) || []).length;
+          if (openQuiz !== 1 || closeQuiz !== 1) {
+            console.error('ERREUR: Balises quiz incorrectes');
+            process.exit(1);
+          }
+
+          const openQuestion = (xmlMultipleImages.match(/<question /g) || []).length;
+          const closeQuestion = (xmlMultipleImages.match(/<\/question>/g) || []).length;
+          if (openQuestion !== closeQuestion) {
+            console.error('ERREUR: Balises question non equilibrees');
+            process.exit(1);
+          }
+          console.log('  OK - Structure XML valide\n');
+
+          console.log('=== TOUS LES TESTS PASSES ===');
+          process.exit(0);
+          EOF
+
+          node validate-xml.js
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install ESLint
+        run: npm install eslint
+
+      - name: Run ESLint (warnings only)
+        run: |
+          npx eslint js/*.js --no-eslintrc --env browser --env es2020 --parser-options ecmaVersion=2020 --rule 'no-unused-vars: warn' --rule 'no-undef: off' || true

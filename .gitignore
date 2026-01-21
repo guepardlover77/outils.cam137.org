@@ -21,3 +21,13 @@ venv/
 .DS_Store
 Thumbs.db
 *.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Tests
+coverage/
+reports/
+.jest/
